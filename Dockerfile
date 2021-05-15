@@ -30,7 +30,6 @@ RUN apt install -y libeigen3-dev
 RUN dbus-uuidgen > /etc/machine-id
 
 RUN apt-get install -y \
-    ros-foxy-cartographer-ros \
     ros-foxy-robot-localization \
     ros-foxy-navigation2 \
     ros-foxy-nav2-bringup \
