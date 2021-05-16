@@ -4,7 +4,6 @@ from launch.substitutions import LaunchConfiguration
 from launch.actions import DeclareLaunchArgument
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
-from nav2_common.launch import RewrittenYaml
 
 import os
 
@@ -43,17 +42,6 @@ def generate_launch_description():
         'kart.yaml'
     )
 
-    param_substitutions = {
-        'use_sim_time':use_sim_time
-    }
-
-    param_file_path = RewrittenYaml(
-        source_file = param_file_path,
-        root_key = '',
-        param_rewrites = param_substitutions,
-        convert_types = True
-    )
-
     rviz_config_file = os.path.join(desc_dir, 'rviz', 'kart.rviz')
 
     robot_state_publisher_node = Node(
@@ -63,7 +51,8 @@ def generate_launch_description():
         output='screen',
         parameters=[
             param_file_path, 
-            {'robot_description':urdf_content}
+            {'robot_description':urdf_content,
+            'use_sim_time': use_sim_time}
         ]
     )
 

@@ -41,16 +41,23 @@ RUN apt-get install -y \
     ros-foxy-image-transport-plugins \
     ros-foxy-slam-toolbox \
     ros-foxy-xacro \
+    ros-foxy-ros2bag \
+    ros-foxy-rosbag2-converter-default-plugins \
+    ros-foxy-rosbag2-storage-default-plugins \
  && apt-get clean
 
 RUN mkdir -p /ros2_ws/src/tritonkart_bringup
 RUN mkdir -p /ros2_ws/src/tritonkart_description
 RUN mkdir -p /ros2_ws/src/tritonkart_mapping
 RUN mkdir -p /ros2_ws/src/tritonkart_utilities
+RUN mkdir -p /ros2_ws/src/tritonkart_localization
+RUN mkdir -p /ros2_ws/src/tritonkart_logging
 COPY ./tritonkart_bringup /ros2_ws/src/tritonkart_bringup
 COPY ./tritonkart_description /ros2_ws/src/tritonkart_description
 COPY ./tritonkart_mapping /ros2_ws/src/tritonkart_mapping
 COPY ./tritonkart_utilities /ros2_ws/src/tritonkart_utilities
+COPY ./tritonkart_localization /ros2_ws/src/tritonkart_localization
+COPY ./tritonkart_logging /ros2_ws/src/tritonkart_logging
 
 
 RUN /bin/bash -c "echo 'source /opt/ros/foxy/setup.bash' >> ~/.bashrc "

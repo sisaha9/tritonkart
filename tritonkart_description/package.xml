@@ -2,10 +2,10 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>tritonkart_description</name>
-  <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="siddharth@todo.todo">siddharth</maintainer>
-  <license>TODO: License declaration</license>
+  <version>1.0.0</version>
+  <description>Contains URDF and model files for TritonKART</description>
+  <maintainer email="omadityasiddharth123@gmail.com">Siddharth Saha</maintainer>
+  <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

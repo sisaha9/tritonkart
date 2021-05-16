@@ -22,7 +22,7 @@ def generate_launch_description():
 
     odom0_topic_cmd = DeclareLaunchArgument(
         'odom0_topic',
-        default_value='/gnss/odom',
+        default_value='/lgsvl/gnss_odom',
         description='Raw Odometry topic'
     )
 

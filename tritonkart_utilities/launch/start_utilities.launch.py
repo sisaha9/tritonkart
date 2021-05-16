@@ -5,7 +5,6 @@ from launch.conditions import IfCondition
 from launch_ros.actions import Node
 import os
 from ament_index_python.packages import get_package_share_directory
-from nav2_common.launch import RewrittenYaml
 
 def generate_launch_description():
     in_cloud = LaunchConfiguration('in_cloud')
@@ -68,25 +67,13 @@ def generate_launch_description():
         'utilities.yaml'
     )
 
-    param_substitutions = {
-        'use_sim_time': use_sim_time
-    }
-
-    parameters_file_path = RewrittenYaml(
-        source_file = parameters_file_path,
-        root_key='',
-        param_rewrites = param_substitutions,
-        convert_types = True
-    )
-
-
 
     scan_node = Node(
         package='pointcloud_to_laserscan', 
         executable='pointcloud_to_laserscan_node',
         remappings=[('cloud_in', in_cloud),
                     ('scan', out_scan)],
-        parameters=[parameters_file_path],
+        parameters=[parameters_file_path, {'use_sim_time': use_sim_time}],
         name='cloud_to_laser_node',
         condition=IfCondition(use_scan)
     )
