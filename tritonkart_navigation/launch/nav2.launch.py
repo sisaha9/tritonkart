@@ -5,6 +5,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.substitutions import LaunchConfiguration
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
 from launch.actions import SetEnvironmentVariable
 from launch_ros.actions import Node
 
@@ -36,7 +37,12 @@ def generate_launch_description():
         default_value=map_file_path
     )
 
+    use_navigation_rviz = LaunchConfiguration('use_navigation_rviz')
 
+    use_navigation_rviz_cmd = DeclareLaunchArgument(
+        'use_navigation_rviz',
+        default_value='false'
+    )
     
     parameters_file_path = os.path.join(
         nav_dir,
@@ -52,6 +58,11 @@ def generate_launch_description():
         'nav_bt.xml'
     )
 
+    rviz_config_file = os.path.join(
+        nav_dir,
+        'rviz',
+        'nav2.rviz')
+
     lifecycle_nodes = ['map_server',
                        'controller_server',
                        'planner_server',
@@ -63,6 +74,7 @@ def generate_launch_description():
         SetEnvironmentVariable('RCUTILS_LOGGING_BUFFERED_STREAM', '1'),
         use_sim_time_cmd,
         map_path_cmd,
+        use_navigation_rviz_cmd,
         Node(
             package='nav2_map_server',
             executable='map_server',
@@ -77,21 +89,21 @@ def generate_launch_description():
             package='nav2_controller',
             executable='controller_server',
             output='screen',
-            parameters=[parameters_file_path]
+            parameters=[parameters_file_path, {'use_sim_time': use_sim_time}]
         ),
         Node(
             package='nav2_planner',
             executable='planner_server',
             name='planner_server',
             output='screen',
-            parameters=[parameters_file_path]
+            parameters=[parameters_file_path, {'use_sim_time': use_sim_time},]
         ),
         Node(
             package='nav2_recoveries',
             executable='recoveries_server',
             name='recoveries_server',
             output='screen',
-            parameters=[parameters_file_path]
+            parameters=[parameters_file_path, {'use_sim_time': use_sim_time},]
         ),
         Node(
             package='nav2_bt_navigator',
@@ -100,17 +112,27 @@ def generate_launch_description():
             output='screen',
             parameters=[
                   parameters_file_path,
+                  {'use_sim_time': use_sim_time},
                   {'default_bt_xml_filename': xml_file_path}
             ]
         ),
         Node(
-            package='nav2_lifecycle_manager',
-            executable='lifecycle_manager',
-            name='lifecycle_manager_navigation',
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2_nav_node',
             output='screen',
-            parameters=[{'use_sim_time': use_sim_time},
-                        {'autostart': True},
-                        {'node_names': lifecycle_nodes}]
-        ),
+            arguments = ['-d', rviz_config_file],
+            parameters = [{'use_sim_time': use_sim_time}],
+            condition= IfCondition(use_navigation_rviz)
+            )
+        # Node(
+        #     package='nav2_lifecycle_manager',
+        #     executable='lifecycle_manager',
+        #     name='lifecycle_manager_navigation',
+        #     output='screen',
+        #     parameters=[{'use_sim_time': use_sim_time},
+        #                 {'autostart': True},
+        #                 {'node_names': lifecycle_nodes}]
+        # ),
     ])
 

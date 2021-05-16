@@ -16,6 +16,8 @@ def generate_launch_description():
     desc_dir = os.path.join(get_package_share_directory('tritonkart_description'), 'launch')
     utilities_dir = os.path.join(get_package_share_directory('tritonkart_utilities'), 'launch')
     mapping_dir = os.path.join(get_package_share_directory('tritonkart_mapping'), 'launch')
+    localization_dir = os.path.join(get_package_share_directory('tritonkart_localization'), 'launch')
+    navigation_dir = os.path.join(get_package_share_directory('tritonkart_navigation'), 'launch')
     
 
     # Create the launch configuration variables
@@ -26,9 +28,10 @@ def generate_launch_description():
     out_cam_raw = LaunchConfiguration('out_cam_raw')
     use_scan = LaunchConfiguration('use_scan')
     use_cam = LaunchConfiguration('use_cam')
-    odom0_topic = LaunchConfiguration('odom0_topic')
-    imu0_topic = LaunchConfiguration('imu0_topic')
-    use_mapping_rviz = LaunchConfiguration('use_mapping_rviz')
+    odom_topic = LaunchConfiguration('odom_topic')
+    imu_topic = LaunchConfiguration('imu_topic')
+    gps_topic = LaunchConfiguration('gps_topic')
+    # use_mapping_rviz = LaunchConfiguration('use_mapping_rviz')
     use_kart_rviz = LaunchConfiguration('use_kart_rviz')
     scan_topic = LaunchConfiguration('scan_topic')
 
@@ -74,16 +77,22 @@ def generate_launch_description():
         default_value='true',
         description='Use Cam conversion')
 
-    odom0_topic_cmd = DeclareLaunchArgument(
-        'odom0_topic',
+    odom_topic_cmd = DeclareLaunchArgument(
+        'odom_topic',
         default_value='/lgsvl/gnss_odom',
         description='Raw Odometry topic'
     )
 
-    imu0_topic_cmd = DeclareLaunchArgument(
-        'imu0_topic',
+    imu_topic_cmd = DeclareLaunchArgument(
+        'imu_topic',
         default_value='/imu/imu_raw',
         description='Raw IMU topic'
+    )
+
+    gps_topic_cmd = DeclareLaunchArgument(
+        'gps_topic',
+        default_value='/lgsvl/gnss_odom',
+        description='Raw GPS topic'
     )
 
     use_kart_rviz_cmd = DeclareLaunchArgument(
@@ -92,10 +101,10 @@ def generate_launch_description():
         description='Pull up Rviz of just kart'
     )
 
-    use_mapping_rviz_cmd = DeclareLaunchArgument(
-        'use_mapping_rviz',
-        default_value='true',
-        description='Pull up Rviz of mapping config'
+    use_navigation_rviz_cmd = DeclareLaunchArgument(
+        'use_navigation_rviz',
+        default_value='false',
+        description='Pull up Rviz of navigation config'
     )
 
     scan_topic_cmd = DeclareLaunchArgument(
@@ -106,11 +115,17 @@ def generate_launch_description():
 
     lifecycle_nodes = [
         'robot_state_publisher_node',
-        'ekf_local_filter_node',
         'cloud_to_laser_node',
         'image_conversion_node',
-        'slam_toolbox_node',
-        'rviz2_node'
+        'ekf_local_filter_node',
+        'ekf_global_filter_node',
+        'navsat_transform_node',
+        'map_server',
+        'controller_server',
+        'planner_server',
+        'recoveries_server',
+        'bt_navigator',
+        'racing_client'
     ]
     
 
@@ -133,16 +148,19 @@ def generate_launch_description():
                               'use_cam': use_cam}.items()),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(mapping_dir, 'ekf_node.launch.py')),
+            PythonLaunchDescriptionSource(os.path.join(localization_dir, 'gps_localization.launch.py')),
             launch_arguments={'use_sim_time': use_sim_time,
-                              'odom0_topic': odom0_topic,
-                              'imu0_topic': imu0_topic}.items()),
+                              'odom_topic': odom_topic,
+                              'imu_topic': imu_topic,
+                              'gps_topic': gps_topic}.items()),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(mapping_dir, 'slam_mapping.launch.py')),
-            launch_arguments={'use_sim_time': use_sim_time,
-                              'use_mapping_rviz': use_mapping_rviz,
-                              'scan_topic': scan_topic}.items()),
+            PythonLaunchDescriptionSource(os.path.join(navigation_dir, 'nav2.launch.py')),
+            launch_arguments={'use_sim_time': use_sim_time}.items()),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(os.path.join(navigation_dir, 'client.launch.py')),
+            launch_arguments=[]),
 
         Node(
             package='nav2_lifecycle_manager',
@@ -150,7 +168,6 @@ def generate_launch_description():
             name='lifecycle_manager_mapping',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time},
-                        {'autostart': True},
                         {'node_names': lifecycle_nodes}])
     ])
 
@@ -168,10 +185,11 @@ def generate_launch_description():
     ld.add_action(out_cam_raw_cmd)
     ld.add_action(use_scan_cmd)
     ld.add_action(use_cam_cmd)
-    ld.add_action(odom0_topic_cmd)
-    ld.add_action(imu0_topic_cmd)
+    ld.add_action(odom_topic_cmd)
+    ld.add_action(imu_topic_cmd)
+    ld.add_action(gps_topic_cmd)
     ld.add_action(use_kart_rviz_cmd)
-    ld.add_action(use_mapping_rviz_cmd)
+    ld.add_action(use_navigation_rviz_cmd)
     ld.add_action(scan_topic_cmd)
 
     # Add the actions to launch all of the navigation nodes
