@@ -35,6 +35,7 @@ endif()
 install(DIRECTORY
   launch
   path
+  scripts
   DESTINATION share/${PROJECT_NAME}
 )
 

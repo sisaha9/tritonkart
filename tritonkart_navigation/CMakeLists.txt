@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(tritonkart_mapping)
+project(tritonkart_navigation)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -17,9 +17,13 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(tf2_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+# find_package(robot_localization REQUIRED)
+find_package(nav2_msgs REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -32,12 +36,20 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-install(DIRECTORY 
-  config
+install(DIRECTORY
   launch
+  config
   rviz
-  maps
+  scripts
   DESTINATION share/${PROJECT_NAME}
+)
+
+# Install Python modules
+ament_python_install_package(${PROJECT_NAME})
+# Install Python executables
+install(PROGRAMS
+  scripts/nav2_client.py
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_package()

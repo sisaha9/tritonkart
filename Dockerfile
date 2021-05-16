@@ -52,12 +52,14 @@ RUN mkdir -p /ros2_ws/src/tritonkart_mapping
 RUN mkdir -p /ros2_ws/src/tritonkart_utilities
 RUN mkdir -p /ros2_ws/src/tritonkart_localization
 RUN mkdir -p /ros2_ws/src/tritonkart_logging
+RUN mkdir -p /ros2_ws/src/tritonkart_navigation
 COPY ./tritonkart_bringup /ros2_ws/src/tritonkart_bringup
 COPY ./tritonkart_description /ros2_ws/src/tritonkart_description
 COPY ./tritonkart_mapping /ros2_ws/src/tritonkart_mapping
 COPY ./tritonkart_utilities /ros2_ws/src/tritonkart_utilities
 COPY ./tritonkart_localization /ros2_ws/src/tritonkart_localization
 COPY ./tritonkart_logging /ros2_ws/src/tritonkart_logging
+COPY ./tritonkart_navigation /ros2_ws/src/tritonkart_navigation
 
 
 RUN /bin/bash -c "echo 'source /opt/ros/foxy/setup.bash' >> ~/.bashrc "

@@ -10,7 +10,7 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
 
-    navigation_dir = get_package_share_directory('tritonkart_navigation')
+    logging_dir = get_package_share_directory('tritonkart_logging')
 
     freq = LaunchConfiguration('frequency')
 
@@ -24,7 +24,7 @@ def generate_launch_description():
 
     save_path_cmd = DeclareLaunchArgument(
         'save_path',
-        default_value=os.path.join(navigation_dir, 'path', 'gps_waypoints.csv'),
+        default_value=os.path.join(logging_dir, 'path', 'gps_waypoints.csv'),
         description='Use simulator time'
     )
 
