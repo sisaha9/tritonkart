@@ -12,6 +12,12 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
+  <depend>ackermann_msgs</depend>
+  <depend>rclpy</depend>
+  <depend>geometry_msgs</depend>
+  <depend>lgsvl_msgs</depend>
+  <depend>rosgraph_msgs</depend>
+
   <exec_depend>image_transport</exec_depend>
   <exec_depend>pointcloud_to_laserscan</exec_depend>
 

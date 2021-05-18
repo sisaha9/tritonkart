@@ -20,6 +20,11 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(lgsvl_msgs REQUIRED)
+find_package(rosgraph_msgs REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -35,6 +40,18 @@ endif()
 install(DIRECTORY 
   config
   launch
+  scripts
   DESTINATION share/${PROJECT_NAME}
 )
+
+# Install Python modules
+ament_python_install_package(${PROJECT_NAME})
+
+# Install Python executables
+install(PROGRAMS
+  scripts/twist_to_ackermann.py
+  scripts/twist_to_vehiclecontroldata.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 ament_package()
