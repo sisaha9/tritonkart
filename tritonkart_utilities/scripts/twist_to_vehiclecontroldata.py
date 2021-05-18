@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import rclpy
 from rclpy.node import Node
 import numpy as np
@@ -19,13 +21,13 @@ class DriveConverter(Node):
 
         self.latest_time = None
 
-        self.publisher = self.create_publisher(
+        self.vehicle_publisher = self.create_publisher(
             VehicleControlData,
             "/vehicle_output",
             1
         )
 
-        self.subscriber = self.create_subscription(
+        self.twist_subscriber = self.create_subscription(
             Twist,
             "/nav2_twist",
             self.twist_callback,
@@ -48,10 +50,9 @@ class DriveConverter(Node):
             vehicle_output.braking_pct = (self.last_speed - self.speed)/self.last_speed
 
         vehicle_output.target_wheel_angular_rate = drive_cmd.angular.x
-        vehicle_output.header.stamp = self.latest_time
-
-
-        self.publisher.publish(control)
+        if self.latest_time is not None:
+            vehicle_output.header.stamp = self.latest_time
+            self.publisher.publish(control)
 
 
 def main(args=None):
@@ -59,7 +60,7 @@ def main(args=None):
 
     drive_converter = DriveConverter()
 
-    rclpy.spin(subscriber)
+    rclpy.spin(drive_converter)
 
     drive_converter.destroy_node()
     rclpy.shutdown()

@@ -163,7 +163,7 @@ def generate_launch_description():
                               'use_kart_rviz': use_kart_rviz}.items()),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(utilities_dir, 'start_utilities.launch.py')),
+            PythonLaunchDescriptionSource(os.path.join(utilities_dir, 'start_utilities_sim.launch.py')),
             launch_arguments={'use_sim_time': use_sim_time,
                               'in_cloud': in_cloud,
                               'out_scan': out_scan,

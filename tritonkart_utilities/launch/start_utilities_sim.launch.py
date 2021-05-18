@@ -124,7 +124,7 @@ def generate_launch_description():
         remappings=[
             ('/clock', clock_topic),
             ('/vehicle_output', svl_topic),
-            ('nav2_twist', twist_topic)
+            ('/nav2_twist', twist_topic)
         ]
     )
 

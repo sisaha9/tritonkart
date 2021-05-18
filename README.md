@@ -2,7 +2,7 @@
 ROS2 Repository for Triton Kart
 
 Editing URDF
-- For most accurate results edit the kart.urdf to reflect your Lidar, IMU, Odometry and GPS positions with respect to the base. This is not most necessary
+- For most accurate results edit the kart.urdf to reflect your Lidar, IMU, Odometry and GPS positions with respect to the base. This is not the most necessary though
 
 Before mapping first note the current GPS coordinates and IMU heading. This goes into the tritonkart_localization yaml file as datum later on
 
