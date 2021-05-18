@@ -47,8 +47,9 @@ class DriveConverter(Node):
             vehicle_output.acceleration_pct = (speed - self.last_speed)/speed
 
         elif speed < self.last_speed:
-            vehicle_output.braking_pct = (self.last_speed - self.speed)/self.last_speed
+            vehicle_output.braking_pct = (self.last_speed - speed)/self.last_speed
 
+        self.last_speed = speed
         vehicle_output.target_wheel_angular_rate = drive_cmd.angular.x
         if self.latest_time is not None:
             vehicle_output.header.stamp = self.latest_time
