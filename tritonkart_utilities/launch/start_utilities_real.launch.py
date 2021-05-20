@@ -41,7 +41,7 @@ def generate_launch_description():
 
     use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time',
-        default_value='true',
+        default_value='false',
         description='Use simulator time'
     )
 
@@ -49,22 +49,22 @@ def generate_launch_description():
 
     use_scan_cmd = DeclareLaunchArgument(
         'use_scan',
-        default_value='true',
+        default_value='false',
         description='Use Scan conversion')
 
     use_cam = LaunchConfiguration('use_cam')
 
     use_cam_cmd = DeclareLaunchArgument(
         'use_cam',
-        default_value='true',
+        default_value='false',
         description='Use Cam conversion')
 
-    clock_topic = LaunchConfiguration('clock_topic')
+    wheelbase = LaunchConfiguration('wheelbase')
 
-    clock_topic_cmd = DeclareLaunchArgument(
-        'clock_topic',
-        default_value='/clock',
-        description='Input Time topic'
+    wheelbase_cmd = DeclareLaunchArgument(
+        'wheelbase',
+        default_value='1.0',
+        description='Input Wheelbase'
     )
 
     twist_topic = LaunchConfiguration('twist_topic')
@@ -75,10 +75,10 @@ def generate_launch_description():
         description='Input Twist Topic'
     )
 
-    svl_topic = LaunchConfiguration('svl_topic')
+    vehicle_topic = LaunchConfiguration('vehicle_topic')
 
-    svl_topic_cmd = DeclareLaunchArgument(
-        'svl_topic',
+    vehicle_topic_cmd = DeclareLaunchArgument(
+        'vehicle_topic',
         default_value='/lgsvl/vehicle_control_cmd',
         description='Output Vehicle topic'
     )
@@ -116,12 +116,12 @@ def generate_launch_description():
         condition=IfCondition(use_cam)
     )
 
-    svl_node = Node(
+    vehicle_node = Node(
         package='tritonkart_utilities',
-        executable='twist_to_vehiclecontroldata.py',
-        name='svl_node',
+        executable='twist_to_ackermann.py',
+        name='vehicle_node',
         output='screen',
-        parameters=[{'svl_topic': svl_topic, 'twist_topic': twist_topic, 'clock_topic': clock_topic}]
+        parameters=[{'wheelbase': wheelbase, 'twist_topic': twist_topic, 'vehicle_topic': vehicle_topic}]
     )
 
     ld = LaunchDescription()
@@ -133,11 +133,11 @@ def generate_launch_description():
     ld.add_action(use_sim_time_cmd)
     ld.add_action(use_scan_cmd)
     ld.add_action(use_cam_cmd)
-    ld.add_action(clock_topic_cmd)
-    ld.add_action(svl_topic_cmd)
+    ld.add_action(wheelbase_cmd)
+    ld.add_action(vehicle_topic_cmd)
     ld.add_action(twist_topic_cmd)
     ld.add_action(scan_node)
     ld.add_action(cam_node)
-    ld.add_action(svl_node)
+    ld.add_action(vehicle_node)
 
     return ld

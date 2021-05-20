@@ -11,10 +11,13 @@ class DriveConverter(Node):
 
     def __init__(self):
         super().__init__("DriveConverter")
+        self.clock_topic = str(self.declare_parameter('clock_topic', '/clock').value)
+        self.twist_topic = str(self.declare_parameter('twist_topic', '/cmd_vel').value)
+        self.svl_topic = str(self.declare_parameter('svl_topic', '/vehicle_output').value)
 
         self.clock_subscriber = self.create_subscription(
             Clock,
-            "/clock",
+            self.clock_topic,
             self.clock_callback,
             1
         )
@@ -23,13 +26,13 @@ class DriveConverter(Node):
 
         self.vehicle_publisher = self.create_publisher(
             VehicleControlData,
-            "/vehicle_output",
+            self.svl_topic,
             1
         )
 
         self.twist_subscriber = self.create_subscription(
             Twist,
-            "/nav2_twist",
+            self.twist_topic,
             self.twist_callback,
             1
         )

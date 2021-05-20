@@ -44,6 +44,7 @@ RUN apt-get install -y \
     ros-foxy-ros2bag \
     ros-foxy-rosbag2-converter-default-plugins \
     ros-foxy-rosbag2-storage-default-plugins \
+    ros-foxy-ackermann-msgs \
  && apt-get clean
 
 RUN mkdir -p /ros2_ws/src/tritonkart_bringup

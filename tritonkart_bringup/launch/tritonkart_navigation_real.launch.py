@@ -35,9 +35,9 @@ def generate_launch_description():
     use_kart_rviz = LaunchConfiguration('use_kart_rviz')
     scan_topic = LaunchConfiguration('scan_topic')
 
-    clock_topic = LaunchConfiguration('clock_topic')
+    wheelbase = LaunchConfiguration('wheelbase')
     twist_topic = LaunchConfiguration('twist_topic')
-    svl_topic = LaunchConfiguration('svl_topic')
+    vehicle_topic = LaunchConfiguration('vehicle_topic')
 
 
     stdout_linebuf_envvar = SetEnvironmentVariable(
@@ -116,10 +116,10 @@ def generate_launch_description():
         description='Lidar Scan topic'
     )
 
-    clock_topic_cmd = DeclareLaunchArgument(
-        'clock_topic',
-        default_value='/clock',
-        description='Input Time topic'
+    wheelbase_cmd = DeclareLaunchArgument(
+        'wheelbase',
+        default_value='1.0',
+        description='Input wheelbase'
     )
 
     
@@ -131,8 +131,8 @@ def generate_launch_description():
     )
     
 
-    svl_topic_cmd = DeclareLaunchArgument(
-        'svl_topic',
+    vehicle_topic_cmd = DeclareLaunchArgument(
+        'vehicle_topic',
         default_value='/lgsvl/vehicle_control_cmd',
         description='Output Vehicle topic'
     )
@@ -141,7 +141,7 @@ def generate_launch_description():
         'robot_state_publisher_node',
         'cloud_to_laser_node',
         'image_conversion_node',
-        'svl_node',
+        'vehicle_node',
         'ekf_local_filter_node',
         'ekf_global_filter_node',
         'navsat_transform_node',
@@ -163,7 +163,7 @@ def generate_launch_description():
                               'use_kart_rviz': use_kart_rviz}.items()),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(utilities_dir, 'start_utilities_sim.launch.py')),
+            PythonLaunchDescriptionSource(os.path.join(utilities_dir, 'start_utilities_real.launch.py')),
             launch_arguments={'use_sim_time': use_sim_time,
                               'in_cloud': in_cloud,
                               'out_scan': out_scan,
@@ -171,9 +171,9 @@ def generate_launch_description():
                               'out_cam_raw': out_cam_raw,
                               'use_scan': use_scan,
                               'use_cam': use_cam,
-                              'clock_topic': clock_topic,
+                              'wheelbase': wheelbase,
                               'twist_topic': twist_topic,
-                              'svl_topic': svl_topic}.items()),
+                              'vehicle_topic': vehicle_topic}.items()),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(localization_dir, 'gps_localization.launch.py')),
@@ -219,9 +219,9 @@ def generate_launch_description():
     ld.add_action(use_kart_rviz_cmd)
     ld.add_action(use_navigation_rviz_cmd)
     ld.add_action(scan_topic_cmd)
-    ld.add_action(clock_topic_cmd)
+    ld.add_action(wheelbase_cmd)
     ld.add_action(twist_topic_cmd)
-    ld.add_action(svl_topic_cmd)
+    ld.add_action(vehicle_topic_cmd)
 
     # Add the actions to launch all of the navigation nodes
     ld.add_action(bringup_cmd_group)
